@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Flip Card</title>
+
+<style>
+:root {
+    --card-width: 340px;
+    --card-height: 500px;
+
+    /* LEVEL 1 COLORS */
+    --page-background: #041C1A;
+
+    --front-color-1: #A8E6CF;
+    --front-color-2: #DFF7E5;
+
+    --back-color-1: #A8E6CF;
+    --back-color-2: #DFF7E5;
+
+    --main-text-color: #1F3D2E;
+    --small-text-color: #52796F;
+
+    --card-radius: 22px;
+
+    --shadow:
+        10px 20px 45px rgba(0, 40, 35, 0.30),
+        0 10px 35px rgba(0, 40, 35, 0.25);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--page-background);
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    overflow: hidden;
+    user-select: none;
+}
+
+.top-instruction {
+    position: fixed;
+    top: 28px;
+    left: 0;
+    right: 0;
+
+    text-align: center;
+    z-index: 20;
+    pointer-events: none;
+
+    color: #DFF7E5;
+}
+
+.swipe-title {
+    font-family: Georgia, serif;
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+}
+
+.swipe-icon {
+    display: inline-block;
+    margin-left: 5px;
+
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    opacity: 0.8;
+
+    animation: swipeHint 1.8s ease-in-out infinite;
+}
+
+.swipe-subtitle {
+    margin-top: 6px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+
+    color: #A8E6CF;
+    letter-spacing: 0.01em;
+}
+
+@keyframes swipeHint {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(6px);
+    }
+}
+
+.card-container {
+    width: var(--card-width);
+    height: var(--card-height);
+    perspective: 1200px;
+    touch-action: pan-y;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    transform-style: preserve-3d;
+
+    transition:
+        transform 0.75s cubic-bezier(.2,.8,.2,1);
+
+    cursor: grab;
+}
+
+.card:active {
+    cursor: grabbing;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+
+    border-radius: var(--card-radius);
+
+    box-shadow: var(--shadow);
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    overflow: hidden;
+}
+
+.card-front {
+    background:
+        linear-gradient(
+            150deg,
+            var(--front-color-1),
+            var(--front-color-2)
+        );
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 30px 30px 35px;
+
+    text-align: center;
+}
+
+.front-top-text {
+    width: 100%;
+    min-height: 24px;
+    margin-top: 2px;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    color: var(--small-text-color);
+    opacity: 0.85;
+}
+
+.front-center {
+    flex: 1;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+}
+
+.emoji-badge {
+    width: 68px;
+    height: 68px;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 30px;
+
+    background:
+        rgba(255,255,255,0.45);
+
+    box-shadow:
+        0 8px 20px rgba(31,61,46,0.12);
+}
+
+.front-title {
+    font-family: Georgia, serif;
+    font-size: 29px;
+    line-height: 1.25;
+    font-weight: 500;
+
+    color: var(--main-text-color);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+    width: 80%;
+}
+
+.divider .line {
+    height: 1px;
+    flex: 1;
+
+    background:
+        rgba(31,61,46,0.25);
+}
+
+.card-back {
+    background:
+        linear-gradient(
+            150deg,
+            var(--back-color-1),
+            var(--back-color-2)
+        );
+
+    transform: rotateY(180deg);
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.back-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.back-header h2 {
+    margin: 0;
+
+    font-family: Georgia, serif;
+    font-size: 21px;
+    font-weight: 500;
+
+    color: var(--main-text-color);
+}
+
+.emoji-badge.small {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+}
+
+.message-box {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+
+    padding: 25px;
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,0.38);
+
+    box-shadow:
+        inset 0 1px 3px rgba(31,61,46,0.08);
+
+    overflow: hidden;
+}
+
+.message {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 16px;
+    line-height: 1.65;
+
+    color: var(--main-text-color);
+
+    padding-right: 8px;
+
+    touch-action: pan-y;
+    scroll-behavior: smooth;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(31,61,46,0.35)
+        rgba(31,61,46,0.08);
+}
+
+.message::-webkit-scrollbar {
+    width: 6px;
+}
+
+.message::-webkit-scrollbar-track {
+    background:
+        rgba(31,61,46,0.08);
+
+    border-radius: 10px;
+}
+
+.message::-webkit-scrollbar-thumb {
+    background:
+        rgba(31,61,46,0.35);
+
+    border-radius: 10px;
+}
+
+.message::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(31,61,46,0.55);
+}
+
+.hint {
+    position: fixed;
+
+    bottom: 18px;
+    left: 0;
+    right: 0;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    color:
+        rgba(168,230,207,0.55);
+
+    pointer-events: none;
+}
+
+@media (max-width: 500px) {
+    :root {
+        --card-width: 82vw;
+        --card-height: 120vw;
+    }
+
+    .top-instruction {
+        top: 22px;
+    }
+
+    .swipe-title {
+        font-size: 23px;
+    }
+
+    .swipe-subtitle {
+        font-size: 13px;
+    }
+}
+
+@media (max-height: 650px) {
+    .top-instruction {
+        top: 12px;
+    }
+
+    .card-container {
+        transform: scale(0.88);
+    }
+
+    .hint {
+        bottom: 8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-instruction">
+
+    <div class="swipe-title">
+        Swipe the card
+        <span class="swipe-icon">↪</span>
+    </div>
+
+    <div class="swipe-subtitle">
+        Flip to reveal your message
+    </div>
+
+</div>
+
+<div class="card-container">
+
+    <div class="card" id="card">
+
+        <div class="card-face card-front">
+
+            <div class="front-top-text">
+                WELCOME TO LEVEL 1
+            </div>
+
+            <div class="front-center">
+
+                <div class="emoji-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M223.45,40.07a8,8,0,0,0-7.52-7.52C139.8,28.08,78.82,51,52.82,94a87.09,87.09,0,0,0-12.76,49c.57,15.92,5.21,32,13.79,47.85l-19.51,19.5a8,8,0,0,0,11.32,11.32l19.5-19.51C81,210.73,97.09,215.37,113,215.94q1.67.06,3.33.06A86.93,86.93,0,0,0,162,203.18C205,177.18,227.93,116.21,223.45,40.07ZM153.75,189.5c-22.75,13.78-49.68,14-76.71.77l88.63-88.62a8,8,0,0,0-11.32-11.32L65.73,179c-13.19-27-13-54,.77-76.71,22.09-36.47,74.6-56.44,141.31-54.06C210.2,114.89,190.22,167.41,153.75,189.5Z"></path></svg>
+                </div>
+
+                <div class="front-title">
+                    Not every beginning needs answers, only the courage to begin<br>
+                    
+                </div>
+
+                <div class="divider">
+                    <span class="line"></span>
+                    <span>😩</span>
+                    <span class="line"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-face card-back">
+
+            <div class="back-header">
+
+                <h2>
+                    Guess and find out
+                </h2>
+
+                <div class="emoji-badge small">
+                    🖋️
+                </div>
+
+            </div>
+
+            <div class="message-box">
+
+                <div class="message">
+
+aisa konsa song hai jisse if we try to sing out lound and together ; then we burst laughing out loud cauz i always make it sound dirty😂 
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="hint">
+    Swipe up or down to read message
+</div>
+
+<script>
+const card =
+    document.getElementById("card");
+
+const message =
+    document.querySelector(".message");
+
+let startX = 0;
+let startY = 0;
+let dragging = false;
+let startedInsideMessage = false;
+
+card.addEventListener(
+    "touchstart",
+    function(event) {
+
+        const touch =
+            event.touches[0];
+
+        startX =
+            touch.clientX;
+
+        startY =
+            touch.clientY;
+
+        startedInsideMessage =
+            message.contains(event.target);
+
+        dragging = true;
+
+    },
+    { passive: true }
+);
+
+card.addEventListener(
+    "touchend",
+    function(event) {
+
+        if (!dragging) return;
+
+        dragging = false;
+
+        const touch =
+            event.changedTouches[0];
+
+        const endX =
+            touch.clientX;
+
+        const endY =
+            touch.clientY;
+
+        const differenceX =
+            endX - startX;
+
+        const differenceY =
+            endY - startY;
+
+        if (
+            startedInsideMessage &&
+            Math.abs(differenceY) >
+            Math.abs(differenceX)
+        ) {
+            return;
+        }
+
+        if (
+            Math.abs(differenceX) > 50 &&
+            Math.abs(differenceX) >
+            Math.abs(differenceY)
+        ) {
+            card.classList.toggle("flipped");
+        }
+
+    },
+    { passive: true }
+);
+
+let mouseStartX = 0;
+let mouseDragging = false;
+
+card.addEventListener(
+    "mousedown",
+    function(event) {
+
+        if (
+            message.contains(event.target)
+        ) {
+            return;
+        }
+
+        mouseStartX =
+            event.clientX;
+
+        mouseDragging = true;
+
+    }
+);
+
+document.addEventListener(
+    "mouseup",
+    function(event) {
+
+        if (!mouseDragging) return;
+
+        mouseDragging = false;
+
+        const differenceX =
+            event.clientX - mouseStartX;
+
+        if (
+            Math.abs(differenceX) > 50
+        ) {
+            card.classList.toggle("flipped");
+        }
+
+    }
+);
+</script>
+
+</body>
+</html>
